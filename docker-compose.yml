@@ -1,0 +1,10 @@
+version: '3.7'
+services:
+  app:
+    build: .
+    tty: true
+    volumes:
+      - .:/ubuntu4microps
+    privileged: true
+    ports:
+      - 7:7
