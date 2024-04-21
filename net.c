@@ -17,7 +17,7 @@ static struct net_device *devices;
 
 struct net_device *net_device_alloc(void) {
     struct net_device *dev;
-    dev = memory_alloc(sizeof(dev));
+    dev = memory_alloc(sizeof(*dev));
     if (!dev) {
         errorf("memory_alloc() failure");
         return NULL;
@@ -100,6 +100,10 @@ int net_run() {
     for(dev = devices; dev; dev = dev->next) {
         net_device_open(dev);
     }
+    if (intr_run() == -1) {
+        errorf("intr_run() failure");
+        return -1;
+    }
     debugf("runnning...");
     return 0;
 }
@@ -111,11 +115,16 @@ void net_shutdown() {
     for(dev = devices; dev; dev = dev->next) {
         net_device_close(dev);
     }
+    intr_shutdown();
     debugf("shutdown");
     return;
 }
 
 int net_init(void){
+    if (intr_init() == -1) {
+        errorf("intr_init() failure");
+        return -1;
+    }
     infof("initialized");
     return 0;
 }
