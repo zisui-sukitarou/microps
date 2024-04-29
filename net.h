@@ -59,6 +59,7 @@ struct net_device_ops {
 
 struct net_device {
     struct net_device *next;
+    struct net_iface *ifaces;
     unsigned int index;
     char name[IFNAMSIZ];
     uint16_t type;
