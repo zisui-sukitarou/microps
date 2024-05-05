@@ -4,6 +4,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "net.h"
+
 #define IP_VERSION_IPV4 4
 
 #define IP_HDR_SIZE_MIN 20
@@ -15,6 +17,10 @@
 #define IP_ADDR_LEN 4
 #define IP_ADDR_STR_LEN 16 /* "ddd.ddd.ddd.ddd\0" */
 
+#define IP_PROTOCOL_ICMP  1
+#define IP_PROTOCOL_TCP   6
+#define IP_PROTOCOL_UDP  17
+
 typedef uint32_t ip_addr_t;
 
 struct ip_iface {
@@ -23,6 +29,12 @@ struct ip_iface {
     ip_addr_t unicast;
     ip_addr_t netmask;
     ip_addr_t broadcast;
+};
+
+struct ip_protocol {
+    struct ip_protocol *next;
+    uint8_t type;
+    void (*handler)(const uint8_t *data, size_t len, ip_addr_t src, ip_addr_t dst, struct ip_iface *iface);
 };
 
 extern const ip_addr_t IP_ADDR_ANY;
@@ -42,6 +54,9 @@ ip_iface_select(ip_addr_t addr);
 
 extern ssize_t
 ip_output(uint8_t protocol, const uint8_t *data, size_t len, ip_addr_t src, ip_addr_t dst);
+
+extern int
+ip_protocol_register(uint8_t type, void (*handler)(const uint8_t *data, size_t len, ip_addr_t src, ip_addr_t dst, struct ip_iface *iface));
 
 extern int
 ip_init(void);
