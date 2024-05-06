@@ -67,7 +67,7 @@ static void arp_dump(const uint8_t *data, size_t len) {
     funlockfile(stderr);
 }
 
-static int arp_reply(struct net_iface *iface, const uint8_t *tha, ip_addr_t tpa, const uint8_t dst) {
+static int arp_reply(struct net_iface *iface, const uint8_t *tha, ip_addr_t tpa, const uint8_t *dst) {
     struct arp_ether_ip reply;
 
     reply.hdr.hrd = hton16(ARP_HRD_ETHER);
