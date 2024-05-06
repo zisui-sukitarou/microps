@@ -69,7 +69,7 @@ int ether_transmit_helper(struct net_device *dev, uint16_t type, const uint8_t *
     size_t flen, pad = 0;
 
     hdr = (struct ether_hdr *)frame;
-    memcpy(hdr->dst, dst, ETHER_ADDR_LEN);
+    // memcpy(hdr->dst, dst, ETHER_ADDR_LEN);
     memcpy(hdr->src, dev->addr, ETHER_ADDR_LEN);
     hdr->type = hton16(type);
     memcpy(hdr+1, data, len);
@@ -79,6 +79,8 @@ int ether_transmit_helper(struct net_device *dev, uint16_t type, const uint8_t *
     flen = sizeof(*hdr) + len + pad;
     debugf("dev=%s, type=0x%04x, len=%zu", dev->name, type, flen);
     ether_dump(frame, flen);
+    // Q. callback は何をしているのか？
+    // A. 送信先のデバイスにフレームを送信する
     return callback(dev, frame, flen) == (ssize_t)flen ? 0 : -1;
 }
 
